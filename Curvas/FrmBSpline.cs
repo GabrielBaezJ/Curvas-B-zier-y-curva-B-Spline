@@ -40,6 +40,22 @@ namespace Curvas
                 comboBoxAlgoritmos.SelectedIndex = 0;
                 ActualizarDescripcion();
                 ActualizarEstado("Sistema listo. Agregue nodos de control para comenzar o arrastre los nodos para moverlos en vivo.");
+
+                // Habilitar DoubleBuffered en el control del canvas mediante reflexión para evitar parpadeo
+                try
+                {
+                    typeof(System.Windows.Forms.Control).InvokeMember(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.SetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                        null,
+                        panelCanvas,
+                        new object[] { true }
+                    );
+                }
+                catch
+                {
+                    // No detener la ejecución si la reflexión falla; simplemente ignorar
+                }
             }
             catch (Exception ex)
             {
