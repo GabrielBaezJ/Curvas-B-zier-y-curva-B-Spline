@@ -31,6 +31,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.curvasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bézierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bSplineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +48,8 @@
             // curvasToolStripMenuItem
             // 
             this.curvasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.bézierToolStripMenuItem});
+            this.bézierToolStripMenuItem,
+            this.bSplineToolStripMenuItem});
             this.curvasToolStripMenuItem.Name = "curvasToolStripMenuItem";
             this.curvasToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.curvasToolStripMenuItem.Text = "Curvas";
@@ -58,6 +60,13 @@
             this.bézierToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bézierToolStripMenuItem.Text = "Bézier";
             this.bézierToolStripMenuItem.Click += new System.EventHandler(this.bézierToolStripMenuItem_Click);
+            // 
+            // bSplineToolStripMenuItem
+            // 
+            this.bSplineToolStripMenuItem.Name = "bSplineToolStripMenuItem";
+            this.bSplineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bSplineToolStripMenuItem.Text = "B - Spline";
+            this.bSplineToolStripMenuItem.Click += new System.EventHandler(this.bSplineToolStripMenuItem_Click);
             // 
             // FrmHome
             // 
@@ -81,5 +90,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem curvasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bézierToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bSplineToolStripMenuItem;
     }
 }

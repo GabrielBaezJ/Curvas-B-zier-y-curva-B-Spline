@@ -23,5 +23,12 @@ namespace Curvas
             frm.MdiParent = this;
             frm.Show();
         }
+
+        private void bSplineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmBSpline frm = new FrmBSpline();
+            frm.MdiParent = this;
+            frm.Show();
+        }
     }
 }
