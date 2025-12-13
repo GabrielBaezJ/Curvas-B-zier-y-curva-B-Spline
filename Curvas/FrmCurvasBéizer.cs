@@ -21,6 +21,8 @@ namespace Curvas
         private int puntoSeleccionado = -1;
         private bool arrastrando = false;
         private const int RADIO_SELECCION = 8;
+        private Point posicionMouseDown = Point.Empty; // Para detectar movimiento
+        private const int DISTANCIA_MINIMA_CLICK = 5; // Píxeles de tolerancia para considerar como clic
 
         public FrmCurvasBéizer()
         {
@@ -233,17 +235,43 @@ namespace Curvas
         /// <summary>
         /// Evento cuando se hace clic en el canvas
         /// Permite agregar puntos de control haciendo clic directamente en el canvas
+        /// Solo agrega punto si no se está arrastrando un punto existente
         /// </summary>
         private void panelCanvas_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
-                // Convertir coordenadas del mouse a valores del NumericUpDown
+                // No agregar punto si estábamos arrastrando
+                int distancia = (int)Math.Sqrt(
+                    Math.Pow(e.X - posicionMouseDown.X, 2) + 
+                    Math.Pow(e.Y - posicionMouseDown.Y, 2)
+                );
+
+                if (distancia > DISTANCIA_MINIMA_CLICK)
+                {
+                    // Se estaba arrastrando, no agregar punto
+                    return;
+                }
+
                 int x = e.X;
                 int y = e.Y;
 
                 if (x < 0 || x > 600 || y < 0 || y > 450)
                     return;
+
+                // Verificar si hay un punto en esta posición
+                for (int i = 0; i < puntosControl.Count; i++)
+                {
+                    float dx = puntosControl[i].X - x;
+                    float dy = puntosControl[i].Y - y;
+                    float distanciaAlPunto = (float)Math.Sqrt(dx * dx + dy * dy);
+
+                    if (distanciaAlPunto <= RADIO_SELECCION)
+                    {
+                        // Hay un punto aquí, no agregar uno nuevo
+                        return;
+                    }
+                }
 
                 if (puntosControl.Count >= 10)
                 {
@@ -272,6 +300,9 @@ namespace Curvas
         {
             try
             {
+                // Guardar posición del mouse para detectar movimiento
+                posicionMouseDown = new Point(e.X, e.Y);
+
                 int x = e.X;
                 int y = e.Y;
 
@@ -344,6 +375,7 @@ namespace Curvas
                     arrastrando = false;
                     ActualizarEstado($"Punto {puntoSeleccionado} posicionado en ({puntosControl[puntoSeleccionado].X}, {puntosControl[puntoSeleccionado].Y})");
                     puntoSeleccionado = -1;
+                    panelCanvas.Invalidate();
                 }
             }
             catch (Exception ex)

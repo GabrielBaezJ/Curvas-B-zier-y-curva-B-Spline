@@ -21,6 +21,8 @@ namespace Curvas
         private int nodoSeleccionado = -1;
         private bool arrastrando = false;
         private const int RADIO_SELECCION = 8;
+        private Point posicionMouseDown = Point.Empty; // Para detectar movimiento
+        private const int DISTANCIA_MINIMA_CLICK = 5; // Píxeles de tolerancia para considerar como clic
 
         public FrmBSpline()
         {
@@ -263,16 +265,43 @@ namespace Curvas
         /// <summary>
         /// Evento cuando se hace clic en el canvas
         /// Permite agregar nodos de control haciendo clic directamente en el canvas
+        /// Solo agrega nodo si no se está arrastrando un nodo existente
         /// </summary>
         private void panelCanvas_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
+                // No agregar nodo si estábamos arrastrando
+                int distancia = (int)Math.Sqrt(
+                    Math.Pow(e.X - posicionMouseDown.X, 2) + 
+                    Math.Pow(e.Y - posicionMouseDown.Y, 2)
+                );
+
+                if (distancia > DISTANCIA_MINIMA_CLICK)
+                {
+                    // Se estaba arrastrando, no agregar nodo
+                    return;
+                }
+
                 int x = e.X;
                 int y = e.Y;
 
                 if (x < 0 || x > 600 || y < 0 || y > 450)
                     return;
+
+                // Verificar si hay un nodo en esta posición
+                for (int i = 0; i < nodosControl.Count; i++)
+                {
+                    float dx = nodosControl[i].X - x;
+                    float dy = nodosControl[i].Y - y;
+                    float distanciaAlNodo = (float)Math.Sqrt(dx * dx + dy * dy);
+
+                    if (distanciaAlNodo <= RADIO_SELECCION)
+                    {
+                        // Hay un nodo aquí, no agregar uno nuevo
+                        return;
+                    }
+                }
 
                 if (nodosControl.Count >= 15)
                 {
@@ -301,6 +330,9 @@ namespace Curvas
         {
             try
             {
+                // Guardar posición del mouse para detectar movimiento
+                posicionMouseDown = new Point(e.X, e.Y);
+
                 int x = e.X;
                 int y = e.Y;
 
@@ -373,6 +405,7 @@ namespace Curvas
                     arrastrando = false;
                     ActualizarEstado($"Nodo {nodoSeleccionado} posicionado en ({nodosControl[nodoSeleccionado].X}, {nodosControl[nodoSeleccionado].Y})");
                     nodoSeleccionado = -1;
+                    panelCanvas.Invalidate();
                 }
             }
             catch (Exception ex)
