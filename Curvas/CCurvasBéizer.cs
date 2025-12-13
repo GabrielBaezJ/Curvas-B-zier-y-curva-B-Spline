@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Curvas
 {
@@ -394,6 +395,29 @@ namespace Curvas
         public string ObtenerDescripcionActual()
         {
             return algoritmoActual.Descripcion;
+        }
+
+        /// <summary>
+        /// Helper para habilitar DoubleBuffered en un Control mediante reflexión
+        /// Evita parpadeo en controles que no exponen la propiedad públicamente
+        /// </summary>
+        public static void HabilitarDoubleBuffer(Control ctrl)
+        {
+            if (ctrl == null) return;
+            try
+            {
+                typeof(Control).InvokeMember(
+                    "DoubleBuffered",
+                    System.Reflection.BindingFlags.SetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                    null,
+                    ctrl,
+                    new object[] { true }
+                );
+            }
+            catch
+            {
+                // Ignorar errores de reflexión
+            }
         }
     }
 }
